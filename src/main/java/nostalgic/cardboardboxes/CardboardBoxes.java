@@ -1,13 +1,18 @@
-package com.example.modid;
+package nostalgic.cardboardboxes;
 
-import com.example.modid.Tags;
+import gregtech.api.unification.material.event.MaterialEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import nostalgic.cardboardboxes.client.renderer.texture.CardboardTextures;
+import nostalgic.cardboardboxes.machine.CardboardMetaTileEntities;
+import nostalgic.cardboardboxes.materials.CardboardMaterials;
+import nostalgic.gtcardboard.Tags;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 @Mod(modid = Tags.MOD_ID, name = Tags.MOD_NAME, version = Tags.VERSION)
-public class ExampleMod {
+public class CardboardBoxes {
 
     public static final Logger LOGGER = LogManager.getLogger(Tags.MOD_NAME);
 
@@ -19,6 +24,12 @@ public class ExampleMod {
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event) {
         LOGGER.info("Hello From {}!", Tags.MOD_NAME);
+        CardboardMetaTileEntities.preInit();
+        CardboardTextures.preInit();
     }
 
+    @SubscribeEvent
+    public void registerMaterials(MaterialEvent event) {
+        CardboardMaterials.register();
+    }
 }

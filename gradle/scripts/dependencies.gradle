@@ -25,6 +25,18 @@ repositories {
             includeGroup 'maven.modrinth'
         }
     }
+    maven {
+        name 'BlameJared Maven'
+        url 'https://maven.blamejared.com'
+    }
+    maven {
+        name 'GTNH Maven'
+        url 'https://nexus.gtnewhorizons.com/repository/public/'
+    }
+    maven {
+        name 'GTCEu Maven'
+        url 'https://maven.gtceu.com'
+    }
     mavenLocal() // Must be last for caching to work
 }
 
@@ -65,4 +77,9 @@ dependencies {
     // implementation ('com.google.code.gson:gson:2.8.6') {
     //     transitive = false
     // }
+
+    //gerg
+    api("com.cleanroommc:groovyscript:1.1.1") { transitive = false }
+    implementation "codechicken:codechickenlib:3.2.3.358:dev"
+    implementation("gregtech:gregtech:2.8.10-beta:dev") { transitive = false } // GTCEu 2.8.10
 }
