@@ -1,6 +1,5 @@
 package nostalgic.cardboardboxes.client.renderer.texture;
 
-import gregtech.client.renderer.texture.custom.*;
 import nostalgic.cardboardboxes.client.renderer.texture.custom.BoxRenderer;
 
 public class CardboardTextures {

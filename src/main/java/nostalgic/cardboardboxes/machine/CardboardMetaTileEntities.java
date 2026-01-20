@@ -7,7 +7,7 @@ import nostalgic.cardboardboxes.common.metatileentities.storage.MetaTileEntityBo
 import nostalgic.cardboardboxes.materials.CardboardMaterials;
 
 public class CardboardMetaTileEntities {
-    public static MetaTileEntityCrate CARDBOARD_CRATE;
+    public static MetaTileEntityBox CARDBOARD_CRATE;
 
     public static void preInit() {
         CARDBOARD_CRATE = registerMetaTileEntity(1639,
