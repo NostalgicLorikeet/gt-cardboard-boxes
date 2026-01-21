@@ -4,6 +4,8 @@ import codechicken.lib.colour.ColourRGBA;
 import codechicken.lib.render.CCRenderState;
 import codechicken.lib.render.pipeline.IVertexOperation;
 import codechicken.lib.vec.Matrix4;
+import gregtech.api.metatileentity.MetaTileEntity;
+import gregtech.api.metatileentity.interfaces.IGregTechTileEntity;
 import gregtech.api.recipes.ModHandler;
 import gregtech.api.unification.material.Material;
 import gregtech.api.util.GTUtility;
@@ -14,15 +16,20 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import nostalgic.cardboardboxes.materials.CardboardMaterials;
 import org.apache.commons.lang3.tuple.Pair;
 import nostalgic.cardboardboxes.client.renderer.texture.CardboardTextures;
 
 public class MetaTileEntityBox extends MetaTileEntityCrate {
+    private final Material material;
+    private final int inventorySize;
     private boolean isTaped;
     private final String TAPED_NBT = "Taped";
 
     public MetaTileEntityBox(ResourceLocation metaTileEntityId, Material material, int inventorySize) {
         super(metaTileEntityId, material, inventorySize);
+        this.material = material;
+        this.inventorySize = inventorySize;
     }
 
     @Override
@@ -45,5 +52,10 @@ public class MetaTileEntityBox extends MetaTileEntityCrate {
         if (taped) {
             Textures.TAPED_OVERLAY.render(renderState, translation, pipeline);
         }
+    }
+
+    @Override
+    public MetaTileEntity createMetaTileEntity(IGregTechTileEntity tileEntity) {
+        return new MetaTileEntityBox(metaTileEntityId, material, inventorySize);
     }
 }

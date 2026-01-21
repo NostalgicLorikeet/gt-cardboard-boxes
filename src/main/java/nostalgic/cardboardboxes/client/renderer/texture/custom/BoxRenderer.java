@@ -14,10 +14,11 @@ import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import nostalgic.cardboardboxes.client.renderer.texture.CardboardTextures;
 import org.apache.commons.lang3.ArrayUtils;
 
 public class BoxRenderer extends CrateRenderer {
+
+    //eternal hell torture??
     private final String basePath;
 
     @SideOnly(Side.CLIENT)
@@ -33,6 +34,7 @@ public class BoxRenderer extends CrateRenderer {
     @Override
     @SideOnly(Side.CLIENT)
     public void registerIcons(TextureMap textureMap) {
+        super.registerIcons(textureMap);
         this.sideSprite = textureMap.registerSprite(GTUtility.gregtechId("blocks/" + basePath));
         this.cardboardTop = textureMap.registerSprite(GTUtility.gregtechId("blocks/storage/crates/cardboard_crate_top"));
     }
