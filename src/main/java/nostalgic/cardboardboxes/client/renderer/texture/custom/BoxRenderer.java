@@ -17,7 +17,6 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import org.apache.commons.lang3.ArrayUtils;
 
 public class BoxRenderer extends CrateRenderer {
-
     //eternal hell torture??
     private final String basePath;
 
