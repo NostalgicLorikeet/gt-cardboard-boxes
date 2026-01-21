@@ -14,6 +14,7 @@ import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import nostalgic.cardboardboxes.client.renderer.texture.CardboardTextures;
 import org.apache.commons.lang3.ArrayUtils;
 
 public class BoxRenderer extends CrateRenderer {
@@ -26,6 +27,7 @@ public class BoxRenderer extends CrateRenderer {
     public BoxRenderer(String basePath) {
         super(basePath);
         this.basePath = basePath;
+        Textures.iconRegisters.add(this);
     }
 
     @Override
