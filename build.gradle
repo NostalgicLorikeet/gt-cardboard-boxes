@@ -217,6 +217,7 @@ jar {
         if (propertyBool('use_access_transformer')) {
             attribute_map['FMLAT'] = propertyString('access_transformer_locations')
         }
+        attribute_map['TweakClass'] = 'org.spongepowered.asm.launch.MixinTweaker'
         attributes(attribute_map)
     }
     // Add all embedded dependencies into the jar

@@ -5,6 +5,7 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import nostalgic.cardboardboxes.client.renderer.texture.CardboardTextures;
+import nostalgic.cardboardboxes.config.Config;
 import nostalgic.cardboardboxes.machine.CardboardMetaTileEntities;
 import nostalgic.cardboardboxes.materials.CardboardMaterials;
 import nostalgic.gtcardboard.Tags;
@@ -22,14 +23,11 @@ public class CardboardBoxes {
      * </a>
      */
     @Mod.EventHandler
-    public void preInit(FMLPreInitializationEvent event) {
+    public void preInit(FMLPreInitializationEvent event) throws NoSuchFieldException {
         LOGGER.info("Hello From {}!", Tags.MOD_NAME);
+        Config.load(event);
         CardboardMetaTileEntities.preInit();
         CardboardTextures.preInit();
-    }
-
-    @SubscribeEvent
-    public void registerMaterials(MaterialEvent event) {
         CardboardMaterials.register();
     }
 }
