@@ -1,15 +1,42 @@
 package nostalgic.cardboardboxes.common.metatileentities.storage;
 
+import codechicken.lib.colour.ColourRGBA;
+import codechicken.lib.raytracer.CuboidRayTraceResult;
+import codechicken.lib.render.CCRenderState;
+import codechicken.lib.render.pipeline.IVertexOperation;
+import codechicken.lib.vec.Matrix4;
+import gregtech.api.gui.GuiTextures;
+import gregtech.api.gui.ModularUI;
+import gregtech.api.items.itemhandlers.GTItemStackHandler;
+import gregtech.api.items.toolitem.ToolClasses;
 import gregtech.api.metatileentity.MetaTileEntity;
 import gregtech.api.metatileentity.interfaces.IGregTechTileEntity;
+import gregtech.api.recipes.ModHandler;
 import gregtech.api.unification.material.Material;
+import gregtech.api.util.GTUtility;
+import gregtech.client.renderer.texture.Textures;
+import gregtech.common.items.MetaItems;
 import gregtech.common.metatileentities.storage.MetaTileEntityCrate;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.resources.I18n;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.network.PacketBuffer;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.apache.commons.lang3.tuple.Pair;
 import nostalgic.cardboardboxes.client.renderer.texture.CardboardTextures;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.List;
+
+import static gregtech.api.capability.GregtechDataCodes.IS_TAPED;
 
 public class MetaTileEntityBox extends MetaTileEntityCrate {
     private final Material material;
@@ -32,5 +59,108 @@ public class MetaTileEntityBox extends MetaTileEntityCrate {
     @Override
     public MetaTileEntity createMetaTileEntity(IGregTechTileEntity tileEntity) {
         return new MetaTileEntityBox(metaTileEntityId, material, inventorySize);
+    }
+
+    @Override
+    public void renderMetaTileEntity(CCRenderState renderState, Matrix4 translation, IVertexOperation[] pipeline) {
+        CardboardTextures.CARDBOARD_CRATE.render(renderState, translation, GTUtility.convertRGBtoOpaqueRGBA_CL(getPaintingColorForRendering()), pipeline);
+        boolean taped = isTaped;
+        if (renderContextStack != null && renderContextStack.getTagCompound() != null) {
+            NBTTagCompound tag = renderContextStack.getTagCompound();
+            if (tag.hasKey(TAPED_NBT) && tag.getBoolean(TAPED_NBT)) {
+                taped = true;
+            }
+        }
+        if (taped) {
+            Textures.TAPED_OVERLAY.render(renderState, translation, pipeline);
+        }
+    }
+
+    @Override
+    public void clearMachineInventory(NonNullList<ItemStack> itemBuffer) {
+        if (!isTaped) {
+            clearInventory(itemBuffer, inventory);
+        }
+    }
+
+    @Override
+    public boolean onRightClick(EntityPlayer playerIn, EnumHand hand, EnumFacing facing,
+                                CuboidRayTraceResult hitResult) {
+        ItemStack stack = playerIn.getHeldItem(hand);
+        if (playerIn.isSneaking() && !isTaped) {
+            if (stack.isItemEqual(MetaItems.DUCT_TAPE.getStackForm()) ||
+                    stack.isItemEqual(MetaItems.BASIC_TAPE.getStackForm())) {
+                if (!playerIn.isCreative()) {
+                    stack.shrink(1);
+                }
+                isTaped = true;
+                if (!getWorld().isRemote) {
+                    writeCustomData(IS_TAPED, buf -> buf.writeBoolean(isTaped));
+                    markDirty();
+                }
+                return true;
+            }
+        }
+        return super.onRightClick(playerIn, hand, facing, hitResult);
+    }
+
+    @Override
+    public NBTTagCompound writeToNBT(NBTTagCompound data) {
+        super.writeToNBT(data);
+        data.setTag("Inventory", inventory.serializeNBT());
+        data.setBoolean(TAPED_NBT, isTaped);
+        return data;
+    }
+
+    @Override
+    public void readFromNBT(NBTTagCompound data) {
+        super.readFromNBT(data);
+        this.inventory.deserializeNBT(data.getCompoundTag("Inventory"));
+        if (data.hasKey(TAPED_NBT)) {
+            this.isTaped = data.getBoolean(TAPED_NBT);
+        }
+    }
+
+    @Override
+    public void initFromItemStackData(NBTTagCompound data) {
+        super.initFromItemStackData(data);
+        if (data.hasKey(TAG_KEY_PAINTING_COLOR)) {
+            this.setPaintingColor(data.getInteger(TAG_KEY_PAINTING_COLOR));
+        }
+        this.isTaped = data.getBoolean(TAPED_NBT);
+        if (isTaped) {
+            this.inventory.deserializeNBT(data.getCompoundTag("Inventory"));
+        }
+
+        data.removeTag(TAPED_NBT);
+        data.removeTag(TAG_KEY_PAINTING_COLOR);
+
+        this.isTaped = false;
+    }
+
+    @Override
+    public void writeItemStackData(NBTTagCompound data) {
+        super.writeItemStackData(data);
+
+        // Account for painting color when breaking the crate
+        if (this.isPainted()) {
+            data.setInteger(TAG_KEY_PAINTING_COLOR, this.getPaintingColor());
+        }
+        // Don't write tape NBT if not taped, to stack with ones from JEI
+        if (isTaped) {
+            data.setBoolean(TAPED_NBT, isTaped);
+            data.setTag("Inventory", inventory.serializeNBT());
+        }
+    }
+
+    @Override
+    public void receiveCustomData(int dataId, PacketBuffer buf) {
+        super.receiveCustomData(dataId, buf);
+
+        if (dataId == IS_TAPED) {
+            this.isTaped = buf.readBoolean();
+            scheduleRenderUpdate();
+            markDirty();
+        }
     }
 }

@@ -31,8 +31,8 @@ public final class Config
 
     public static boolean syncConfig()
     {
-        crateKeepTapeOnPlace = configFile.get(ENABLE_DISABLE, "Make crates remain taped when placed down, instead remove tape when opened", crateKeepTapeOnPlace).getBoolean(crateKeepTapeOnPlace);
-        boxKeepTapeOnPlace = configFile.get(ENABLE_DISABLE, "Make boxes remain taped when placed down, instead remove tape when opened", boxKeepTapeOnPlace).getBoolean(boxKeepTapeOnPlace);
+        crateKeepTapeOnPlace = configFile.get(ENABLE_DISABLE, "Make crates remain taped when placed down, instead, tape is removed when opened", crateKeepTapeOnPlace).getBoolean(crateKeepTapeOnPlace);
+        boxKeepTapeOnPlace = configFile.get(ENABLE_DISABLE, "Make boxes remain taped when placed down, instead, tape is removed when opened", boxKeepTapeOnPlace).getBoolean(boxKeepTapeOnPlace);
         crateNoTape = configFile.get(ENABLE_DISABLE, "Make crates not need to be taped to retain their contents when broken", crateNoTape).getBoolean(crateNoTape);
         boxNoTape = configFile.get(ENABLE_DISABLE, "Make boxes not need to be taped to retain their contents when broken", boxNoTape).getBoolean(boxNoTape);
 
