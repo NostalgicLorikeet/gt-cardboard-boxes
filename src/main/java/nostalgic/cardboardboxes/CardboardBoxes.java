@@ -1,9 +1,7 @@
 package nostalgic.cardboardboxes;
 
-import gregtech.api.unification.material.event.MaterialEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import nostalgic.cardboardboxes.client.renderer.texture.CardboardTextures;
 import nostalgic.cardboardboxes.config.Config;
 import nostalgic.cardboardboxes.machine.CardboardMetaTileEntities;

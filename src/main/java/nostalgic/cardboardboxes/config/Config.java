@@ -15,8 +15,6 @@ public final class Config
 
     public static Logger log = LogManager.getLogger(Tags.MOD_ID + "-" + "Config");
 
-    private static final String ENABLE_DISABLE = "ENABLE-DISABLE";
-
     private Config()
     {
     }
@@ -31,10 +29,10 @@ public final class Config
 
     public static boolean syncConfig()
     {
-        crateKeepTapeOnPlace = configFile.get(ENABLE_DISABLE, "Make crates remain taped when placed down, instead, tape is removed when opened", crateKeepTapeOnPlace).getBoolean(crateKeepTapeOnPlace);
-        boxKeepTapeOnPlace = configFile.get(ENABLE_DISABLE, "Make boxes remain taped when placed down, instead, tape is removed when opened", boxKeepTapeOnPlace).getBoolean(boxKeepTapeOnPlace);
-        crateNoTape = configFile.get(ENABLE_DISABLE, "Make crates not need to be taped to retain their contents when broken", crateNoTape).getBoolean(crateNoTape);
-        boxNoTape = configFile.get(ENABLE_DISABLE, "Make boxes not need to be taped to retain their contents when broken", boxNoTape).getBoolean(boxNoTape);
+        crateKeepTapeOnPlace = configFile.get("Make crates remain taped when placed down, instead, tape is removed when opened", "crateKeepTapeOnPlace", crateKeepTapeOnPlace).getBoolean(crateKeepTapeOnPlace);
+        boxKeepTapeOnPlace = configFile.get("Make boxes remain taped when placed down, instead, tape is removed when opened", "boxKeepTapeOnPlace", boxKeepTapeOnPlace).getBoolean(boxKeepTapeOnPlace);
+        crateNoTape = configFile.get("Make crates not need to be taped to retain their contents when broken", "crateNoTape", crateNoTape).getBoolean(crateNoTape);
+        boxNoTape = configFile.get("Make boxes not need to be taped to retain their contents when broken", "boxNoTape", boxNoTape).getBoolean(boxNoTape);
 
         // save changes if any
         boolean changed = false;

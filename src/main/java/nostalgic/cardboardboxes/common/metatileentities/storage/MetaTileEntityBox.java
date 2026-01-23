@@ -1,24 +1,17 @@
 package nostalgic.cardboardboxes.common.metatileentities.storage;
 
-import codechicken.lib.colour.ColourRGBA;
 import codechicken.lib.raytracer.CuboidRayTraceResult;
 import codechicken.lib.render.CCRenderState;
 import codechicken.lib.render.pipeline.IVertexOperation;
 import codechicken.lib.vec.Matrix4;
-import gregtech.api.gui.GuiTextures;
-import gregtech.api.gui.ModularUI;
-import gregtech.api.items.itemhandlers.GTItemStackHandler;
-import gregtech.api.items.toolitem.ToolClasses;
 import gregtech.api.metatileentity.MetaTileEntity;
 import gregtech.api.metatileentity.interfaces.IGregTechTileEntity;
-import gregtech.api.recipes.ModHandler;
 import gregtech.api.unification.material.Material;
 import gregtech.api.util.GTUtility;
 import gregtech.client.renderer.texture.Textures;
 import gregtech.common.items.MetaItems;
 import gregtech.common.metatileentities.storage.MetaTileEntityCrate;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -27,14 +20,11 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import nostalgic.cardboardboxes.config.Config;
 import org.apache.commons.lang3.tuple.Pair;
 import nostalgic.cardboardboxes.client.renderer.texture.CardboardTextures;
-import org.jetbrains.annotations.Nullable;
-
-import java.util.List;
 
 import static gregtech.api.capability.GregtechDataCodes.IS_TAPED;
 
@@ -43,11 +33,16 @@ public class MetaTileEntityBox extends MetaTileEntityCrate {
     private final int inventorySize;
     private boolean isTaped;
     private final String TAPED_NBT = "Taped";
+    private static final boolean boxKeepTapeOnPlace = (Config.boxKeepTapeOnPlace && !Config.boxNoTape);
+    private static final boolean boxNoTape = (Config.boxNoTape);
 
     public MetaTileEntityBox(ResourceLocation metaTileEntityId, Material material, int inventorySize) {
         super(metaTileEntityId, material, inventorySize);
         this.material = material;
         this.inventorySize = inventorySize;
+        if (boxNoTape) {
+            isTaped = true;
+        }
     }
 
     @Override
@@ -64,15 +59,17 @@ public class MetaTileEntityBox extends MetaTileEntityCrate {
     @Override
     public void renderMetaTileEntity(CCRenderState renderState, Matrix4 translation, IVertexOperation[] pipeline) {
         CardboardTextures.CARDBOARD_CRATE.render(renderState, translation, GTUtility.convertRGBtoOpaqueRGBA_CL(getPaintingColorForRendering()), pipeline);
-        boolean taped = isTaped;
-        if (renderContextStack != null && renderContextStack.getTagCompound() != null) {
-            NBTTagCompound tag = renderContextStack.getTagCompound();
-            if (tag.hasKey(TAPED_NBT) && tag.getBoolean(TAPED_NBT)) {
-                taped = true;
+        if (!boxNoTape) {
+            boolean taped = isTaped;
+            if (renderContextStack != null && renderContextStack.getTagCompound() != null) {
+                NBTTagCompound tag = renderContextStack.getTagCompound();
+                if (tag.hasKey(TAPED_NBT) && tag.getBoolean(TAPED_NBT)) {
+                    taped = true;
+                }
             }
-        }
-        if (taped) {
-            Textures.TAPED_OVERLAY.render(renderState, translation, pipeline);
+            if (taped) {
+                Textures.TAPED_OVERLAY.render(renderState, translation, pipeline);
+            }
         }
     }
 
@@ -87,17 +84,33 @@ public class MetaTileEntityBox extends MetaTileEntityCrate {
     public boolean onRightClick(EntityPlayer playerIn, EnumHand hand, EnumFacing facing,
                                 CuboidRayTraceResult hitResult) {
         ItemStack stack = playerIn.getHeldItem(hand);
-        if (playerIn.isSneaking() && !isTaped) {
-            if (stack.isItemEqual(MetaItems.DUCT_TAPE.getStackForm()) ||
-                    stack.isItemEqual(MetaItems.BASIC_TAPE.getStackForm())) {
-                if (!playerIn.isCreative()) {
-                    stack.shrink(1);
+
+        boolean playerHoldingTape = (stack.isItemEqual(MetaItems.DUCT_TAPE.getStackForm()) || stack.isItemEqual(MetaItems.BASIC_TAPE.getStackForm()));
+        boolean playerSneaking = playerIn.isSneaking();
+
+        if (!boxNoTape) {
+            if (playerSneaking) {
+                if (!isTaped) {
+                    if (playerHoldingTape) {
+                        if (!playerIn.isCreative()) {
+                            stack.shrink(1);
+                        }
+                        isTaped = true;
+                        if (!getWorld().isRemote) {
+                            writeCustomData(IS_TAPED, buf -> buf.writeBoolean(isTaped));
+                            markDirty();
+                        }
+                        return true;
+                    }
+                } else if (boxKeepTapeOnPlace && isTaped) {
+                    isTaped = false;
+                    if (!getWorld().isRemote) {
+                        writeCustomData(IS_TAPED, buf -> buf.writeBoolean(isTaped));
+                        markDirty();
+                    }
+                    return true;
                 }
-                isTaped = true;
-                if (!getWorld().isRemote) {
-                    writeCustomData(IS_TAPED, buf -> buf.writeBoolean(isTaped));
-                    markDirty();
-                }
+            } else if (boxKeepTapeOnPlace && isTaped) {
                 return true;
             }
         }
@@ -147,6 +160,7 @@ public class MetaTileEntityBox extends MetaTileEntityCrate {
             data.setInteger(TAG_KEY_PAINTING_COLOR, this.getPaintingColor());
         }
         // Don't write tape NBT if not taped, to stack with ones from JEI
+        // try getSlots() later
         if (isTaped) {
             data.setBoolean(TAPED_NBT, isTaped);
             data.setTag("Inventory", inventory.serializeNBT());
