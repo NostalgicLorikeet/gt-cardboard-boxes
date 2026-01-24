@@ -130,7 +130,7 @@ public class MetaTileEntityBox extends MetaTileEntityCrate {
         super.readFromNBT(data);
         this.inventory.deserializeNBT(data.getCompoundTag("Inventory"));
         if (data.hasKey(TAPED_NBT)) {
-            this.isTaped = data.getBoolean(TAPED_NBT);
+            this.isTaped = (data.getBoolean(TAPED_NBT) || boxNoTape);
         }
     }
 
@@ -140,7 +140,7 @@ public class MetaTileEntityBox extends MetaTileEntityCrate {
         if (data.hasKey(TAG_KEY_PAINTING_COLOR)) {
             this.setPaintingColor(data.getInteger(TAG_KEY_PAINTING_COLOR));
         }
-        this.isTaped = data.getBoolean(TAPED_NBT);
+        this.isTaped = boxNoTape || data.getBoolean(TAPED_NBT);
         if (isTaped) {
             this.inventory.deserializeNBT(data.getCompoundTag("Inventory"));
         }
@@ -148,7 +148,7 @@ public class MetaTileEntityBox extends MetaTileEntityCrate {
         data.removeTag(TAPED_NBT);
         data.removeTag(TAG_KEY_PAINTING_COLOR);
 
-        this.isTaped = false;
+        this.isTaped = boxNoTape;
     }
 
     @Override
@@ -160,10 +160,19 @@ public class MetaTileEntityBox extends MetaTileEntityCrate {
             data.setInteger(TAG_KEY_PAINTING_COLOR, this.getPaintingColor());
         }
         // Don't write tape NBT if not taped, to stack with ones from JEI
-        // try getSlots() later
-        if (isTaped) {
-            data.setBoolean(TAPED_NBT, isTaped);
-            data.setTag("Inventory", inventory.serializeNBT());
+        // i could prolly simply this but idk if the second data.setBoolean would get messed up by some other weird thing so its this
+        if (!boxNoTape) {
+            if (isTaped) {
+                data.setBoolean(TAPED_NBT, isTaped);
+                data.setTag("Inventory", inventory.serializeNBT());
+            }
+        } else {
+            if (!isInventoryEmpty()) {
+                data.setBoolean(TAPED_NBT, true);
+                data.setTag("Inventory", inventory.serializeNBT());
+            } else {
+                data.setBoolean(TAPED_NBT, false);
+            }
         }
     }
 
@@ -176,5 +185,14 @@ public class MetaTileEntityBox extends MetaTileEntityCrate {
             scheduleRenderUpdate();
             markDirty();
         }
+    }
+
+    public boolean isInventoryEmpty() {
+        for (int i = 0; i<inventory.getSlots(); i+=1) {
+            if (!inventory.getStackInSlot(i).isEmpty()) {
+                return false;
+            }
+        }
+        return true;
     }
 }
