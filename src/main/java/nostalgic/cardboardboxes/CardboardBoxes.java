@@ -23,7 +23,7 @@ public class CardboardBoxes {
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event) throws NoSuchFieldException {
         LOGGER.info("Hello From {}!", Tags.MOD_NAME);
-        Config.load(event);
+        //Config.load(event);
         CardboardMetaTileEntities.preInit();
         CardboardTextures.preInit();
         CardboardMaterials.register();

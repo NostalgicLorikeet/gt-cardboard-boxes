@@ -22,7 +22,6 @@ import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import nostalgic.cardboardboxes.config.Config;
 import org.apache.commons.lang3.tuple.Pair;
 import nostalgic.cardboardboxes.client.renderer.texture.CardboardTextures;
 
@@ -33,16 +32,13 @@ public class MetaTileEntityBox extends MetaTileEntityCrate {
     private final int inventorySize;
     private boolean isTaped;
     private final String TAPED_NBT = "Taped";
-    private static final boolean boxKeepTapeOnPlace = (Config.boxKeepTapeOnPlace && !Config.boxNoTape);
-    private static final boolean boxNoTape = (Config.boxNoTape);
+    //private static final boolean boxKeepTapeOnPlace = (Config.boxKeepTapeOnPlace && !Config.boxNoTape);
+    //private static final boolean boxNoTape = (Config.boxNoTape);
 
     public MetaTileEntityBox(ResourceLocation metaTileEntityId, Material material, int inventorySize) {
         super(metaTileEntityId, material, inventorySize);
         this.material = material;
         this.inventorySize = inventorySize;
-        if (boxNoTape) {
-            isTaped = true;
-        }
     }
 
     @Override
@@ -59,17 +55,15 @@ public class MetaTileEntityBox extends MetaTileEntityCrate {
     @Override
     public void renderMetaTileEntity(CCRenderState renderState, Matrix4 translation, IVertexOperation[] pipeline) {
         CardboardTextures.CARDBOARD_CRATE.render(renderState, translation, GTUtility.convertRGBtoOpaqueRGBA_CL(getPaintingColorForRendering()), pipeline);
-        if (!boxNoTape) {
-            boolean taped = isTaped;
-            if (renderContextStack != null && renderContextStack.getTagCompound() != null) {
-                NBTTagCompound tag = renderContextStack.getTagCompound();
-                if (tag.hasKey(TAPED_NBT) && tag.getBoolean(TAPED_NBT)) {
-                    taped = true;
-                }
+        boolean taped = isTaped;
+        if (renderContextStack != null && renderContextStack.getTagCompound() != null) {
+            NBTTagCompound tag = renderContextStack.getTagCompound();
+            if (tag.hasKey(TAPED_NBT) && tag.getBoolean(TAPED_NBT)) {
+                taped = true;
             }
-            if (taped) {
-                Textures.TAPED_OVERLAY.render(renderState, translation, pipeline);
-            }
+        }
+        if (taped) {
+            Textures.TAPED_OVERLAY.render(renderState, translation, pipeline);
         }
     }
 
@@ -84,33 +78,17 @@ public class MetaTileEntityBox extends MetaTileEntityCrate {
     public boolean onRightClick(EntityPlayer playerIn, EnumHand hand, EnumFacing facing,
                                 CuboidRayTraceResult hitResult) {
         ItemStack stack = playerIn.getHeldItem(hand);
-
-        boolean playerHoldingTape = (stack.isItemEqual(MetaItems.DUCT_TAPE.getStackForm()) || stack.isItemEqual(MetaItems.BASIC_TAPE.getStackForm()));
-        boolean playerSneaking = playerIn.isSneaking();
-
-        if (!boxNoTape) {
-            if (playerSneaking) {
-                if (!isTaped) {
-                    if (playerHoldingTape) {
-                        if (!playerIn.isCreative()) {
-                            stack.shrink(1);
-                        }
-                        isTaped = true;
-                        if (!getWorld().isRemote) {
-                            writeCustomData(IS_TAPED, buf -> buf.writeBoolean(isTaped));
-                            markDirty();
-                        }
-                        return true;
-                    }
-                } else if (boxKeepTapeOnPlace && isTaped) {
-                    isTaped = false;
-                    if (!getWorld().isRemote) {
-                        writeCustomData(IS_TAPED, buf -> buf.writeBoolean(isTaped));
-                        markDirty();
-                    }
-                    return true;
+        if (playerIn.isSneaking() && !isTaped) {
+            if (stack.isItemEqual(MetaItems.DUCT_TAPE.getStackForm()) ||
+                    stack.isItemEqual(MetaItems.BASIC_TAPE.getStackForm())) {
+                if (!playerIn.isCreative()) {
+                    stack.shrink(1);
                 }
-            } else if (boxKeepTapeOnPlace && isTaped) {
+                isTaped = true;
+                if (!getWorld().isRemote) {
+                    writeCustomData(IS_TAPED, buf -> buf.writeBoolean(isTaped));
+                    markDirty();
+                }
                 return true;
             }
         }
@@ -130,7 +108,7 @@ public class MetaTileEntityBox extends MetaTileEntityCrate {
         super.readFromNBT(data);
         this.inventory.deserializeNBT(data.getCompoundTag("Inventory"));
         if (data.hasKey(TAPED_NBT)) {
-            this.isTaped = (data.getBoolean(TAPED_NBT) || boxNoTape);
+            this.isTaped = data.getBoolean(TAPED_NBT);
         }
     }
 
@@ -140,7 +118,7 @@ public class MetaTileEntityBox extends MetaTileEntityCrate {
         if (data.hasKey(TAG_KEY_PAINTING_COLOR)) {
             this.setPaintingColor(data.getInteger(TAG_KEY_PAINTING_COLOR));
         }
-        this.isTaped = boxNoTape || data.getBoolean(TAPED_NBT);
+        this.isTaped = data.getBoolean(TAPED_NBT);
         if (isTaped) {
             this.inventory.deserializeNBT(data.getCompoundTag("Inventory"));
         }
@@ -148,7 +126,7 @@ public class MetaTileEntityBox extends MetaTileEntityCrate {
         data.removeTag(TAPED_NBT);
         data.removeTag(TAG_KEY_PAINTING_COLOR);
 
-        this.isTaped = boxNoTape;
+        this.isTaped = false;
     }
 
     @Override
@@ -160,19 +138,9 @@ public class MetaTileEntityBox extends MetaTileEntityCrate {
             data.setInteger(TAG_KEY_PAINTING_COLOR, this.getPaintingColor());
         }
         // Don't write tape NBT if not taped, to stack with ones from JEI
-        // i could prolly simply this but idk if the second data.setBoolean would get messed up by some other weird thing so its this
-        if (!boxNoTape) {
-            if (isTaped) {
-                data.setBoolean(TAPED_NBT, isTaped);
-                data.setTag("Inventory", inventory.serializeNBT());
-            }
-        } else {
-            if (!isInventoryEmpty()) {
-                data.setBoolean(TAPED_NBT, true);
-                data.setTag("Inventory", inventory.serializeNBT());
-            } else {
-                data.setBoolean(TAPED_NBT, false);
-            }
+        if (isTaped) {
+            data.setBoolean(TAPED_NBT, isTaped);
+            data.setTag("Inventory", inventory.serializeNBT());
         }
     }
 
