@@ -9,7 +9,7 @@ import nostalgic.cardboardboxes.materials.CardboardMaterials;
 public class CardboardMetaTileEntities {
     public static MetaTileEntityBox CARDBOARD_CRATE;
 
-    public static void preInit() throws NoSuchFieldException {
+    public static void preInit() {
         CARDBOARD_CRATE = registerMetaTileEntity(1639,
             new MetaTileEntityBox(gregtechId("crate.cardboard"), CardboardMaterials.Cardboard, 9));
     }
