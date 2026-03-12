@@ -8,7 +8,7 @@ import static gregtech.api.unification.ore.OrePrefix.plate;
 import static nostalgic.cardboardboxes.machine.CardboardMetaTileEntities.CARDBOARD_CRATE;
 import static nostalgic.cardboardboxes.materials.CardboardMaterials.Cardboard;
 
-public class CardboardRecipes{
+public class CardboardRecipes {
     public static void registerRecipes() {
         ASSEMBLER_RECIPES.recipeBuilder().EUt(8).input(plate, Cardboard, 6).input(MetaItems.STICKY_RESIN, 1)
                 .outputs(CARDBOARD_CRATE.getStackForm()).duration(200).circuitMeta(1).buildAndRegister();
