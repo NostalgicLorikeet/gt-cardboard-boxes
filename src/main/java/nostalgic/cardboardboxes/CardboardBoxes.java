@@ -19,16 +19,5 @@ public class CardboardBoxes {
         //Config.load(event);
         CardboardMetaTileEntities.preInit();
         CardboardTextures.preInit();
-        CardboardMaterials.register();
     }
-
-    @SubscribeEvent
-    public static void createMaterialRegistry(MaterialRegistryEvent event) {
-        GregTechAPI.materialManager.createRegistry(Tags.MOD_ID);
-    }
-
-    //@SubscribeEvent
-    //public static void registerMTERegistry(MTEManager.MTERegistryEvent event) {
-    //    GregTechAPI.mteManager.createRegistry(Tags.MOD_ID);
-    //}
 }

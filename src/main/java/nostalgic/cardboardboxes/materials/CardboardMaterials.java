@@ -10,7 +10,7 @@ public class CardboardMaterials {
     public static Material Cardboard;
 
     public static void register() {
-        Cardboard = new Material.Builder(17779, new ResourceLocation(Tags.MOD_ID,"cardboard"))
+        Cardboard = new Material.Builder(0, new ResourceLocation(Tags.MOD_ID,"cardboard"))
                 .flags(GENERATE_PLATE, DISABLE_DECOMPOSITION)
                 .color(0xA07752).build();
     }
