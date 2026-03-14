@@ -24,15 +24,15 @@ public class CardboardRecipes {
         ASSEMBLER_RECIPES.recipeBuilder().EUt(8).input(plate, Cardboard, 6).fluidInputs(Glue.getFluid(20))
                 .outputs(CARDBOARD_CRATE.getStackForm()).duration(200).circuitMeta(1).buildAndRegister();
 
-        ModHandler.addShapedRecipe( "cardboard_crate", CardboardMetaTileEntities.CARDBOARD_CRATE.getStackForm(),
+        ModHandler.addShapedRecipe("cardboard_crate", CardboardMetaTileEntities.CARDBOARD_CRATE.getStackForm(),
                 "RRR", "RPR", " R ",
                 'R', new UnificationEntry(OrePrefix.plate, CardboardMaterials.Cardboard),
                 'P', MetaItems.STICKY_RESIN.getStackForm());
 
-        //ModHandler.addShapedRecipe(true, "cardboard_sheet", OreDictUnifier.get(OrePrefix.plate, CardboardMaterials.Cardboard, 1),
-        //        "CRC", "CRC", "CBC",
-        //        'R', MetaItems.STICKY_RESIN.getStackForm(),
-        //        'B', new ItemStack(Items.WATER_BUCKET),
-        //        'C', OreDictUnifier.get(OrePrefix.dust, Materials.Paper));
+        ModHandler.addShapedRecipe(true, "cardboard_sheet", OreDictUnifier.get(OrePrefix.plate, CardboardMaterials.Cardboard, 1),
+                "CRC", "CRC", "CBC",
+                'R', MetaItems.STICKY_RESIN.getStackForm(),
+                'B', new ItemStack(Items.WATER_BUCKET),
+                'C', new UnificationEntry(OrePrefix.dust, Materials.Paper));
     }
 }
