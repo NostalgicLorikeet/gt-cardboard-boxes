@@ -13,7 +13,6 @@ public class CardboardMaterials {
         Cardboard = new Material.Builder(0, new ResourceLocation(Tags.MOD_ID,"cardboard"))
                 .flags(GENERATE_PLATE, DISABLE_DECOMPOSITION)
                 .color(0xA07752)
-                .dust()
                 .build();
     }
 }
