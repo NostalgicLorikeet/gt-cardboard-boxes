@@ -163,4 +163,14 @@ public class MetaTileEntityBox extends MetaTileEntityCrate {
         }
         return true;
     }
+
+    @Override
+    public float getBlockHardness() {
+        return 0.2F;
+    }
+
+    @Override
+    public float getBlockResistance() {
+        return 0.2F;
+    }
 }
