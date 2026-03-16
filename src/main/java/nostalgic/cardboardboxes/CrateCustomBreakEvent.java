@@ -2,6 +2,7 @@ package nostalgic.cardboardboxes;
 
 import gregtech.api.block.machines.BlockMachine;
 import gregtech.api.metatileentity.MetaTileEntity;
+import gregtech.common.metatileentities.storage.MetaTileEntityCrate;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -29,11 +30,13 @@ public class CrateCustomBreakEvent {
             World world = event.getWorld();
             BlockPos pos = event.getPos();
             MetaTileEntity metaTileEntity = getMetaTileEntity(world, pos);
-            if (!world.isRemote) {
-                if (metaTileEntity instanceof MetaTileEntityBox) {
+            if (!world.isRemote && metaTileEntity instanceof MetaTileEntityCrate) {
+                boolean isBox = metaTileEntity instanceof MetaTileEntityBox;
+                if (isBox) {
                     MetaTileEntityBox box = (MetaTileEntityBox) metaTileEntity;
                     ItemStack boxDrop = box.getStackForm();
-                    if (!box.isTaped()) {
+                    boolean taped = box.isTaped();
+                    if (!taped) {
                         NonNullList<ItemStack> inventoryContents = NonNullList.create();
                         box.clearMachineInventory(inventoryContents);
                         for (ItemStack itemStack : inventoryContents) {
@@ -43,7 +46,7 @@ public class CrateCustomBreakEvent {
                         boxDrop.setTagCompound(box.writeToNBT(new NBTTagCompound()));
                         boxDrop.getTagCompound().setBoolean("Taped", true);
                     }
-                    if (!player.isCreative() || box.isTaped()) {
+                    if (!player.isCreative() || taped) {
                         Block.spawnAsEntity(world, pos, boxDrop);
                     }
                     world.setBlockToAir(pos);
