@@ -32,10 +32,10 @@ public class CrateCustomBreakEvent {
             MetaTileEntity metaTileEntity = getMetaTileEntity(world, pos);
             if (!world.isRemote && metaTileEntity instanceof MetaTileEntityCrate) {
                 boolean isBox = metaTileEntity instanceof MetaTileEntityBox;
+                boolean taped = ((IMixinCrate) metaTileEntity).isTaped();
                 if (isBox) {
                     MetaTileEntityBox box = (MetaTileEntityBox) metaTileEntity;
                     ItemStack boxDrop = box.getStackForm();
-                    boolean taped = box.isTaped();
                     if (!taped) {
                         NonNullList<ItemStack> inventoryContents = NonNullList.create();
                         box.clearMachineInventory(inventoryContents);

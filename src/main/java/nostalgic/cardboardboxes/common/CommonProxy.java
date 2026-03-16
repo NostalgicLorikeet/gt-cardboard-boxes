@@ -17,16 +17,19 @@ public class CommonProxy {
 
     @SubscribeEvent(priority = EventPriority.LOW)
     public static void registerRecipes(RegistryEvent.Register<IRecipe> event) {
-         CardboardRecipes.registerRecipes();
+        System.out.println("AAAAAAAAAAAAAAAAAAAAAAAAAAAAH FUUUUCK1");
+        CardboardRecipes.registerRecipes();
     }
 
     @SubscribeEvent
     public static void createMaterialRegistry(MaterialRegistryEvent event) {
+        System.out.println("AAAAAAAAAAAAAAAAAAAAAAAAAAAAH FUUUUCK2");
         GregTechAPI.materialManager.createRegistry(Tags.MOD_ID);
     }
 
     @SubscribeEvent()
     public static void registerMaterials(MaterialEvent event) {
+        System.out.println("AAAAAAAAAAAAAAAAAAAAAAAAAAAAH FUUUUCK3");
         CardboardMaterials.register();
     }
 }

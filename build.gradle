@@ -88,6 +88,7 @@ minecraft {
         args << '-Dmixin.hotSwap=true'
         args << '-Dmixin.checks.interfaces=true'
         args << '-Dmixin.debug.export=true'
+        args << '-Dmixin.config=mixins.gtcardboard.json'
     }
     extraRunJvmArguments.addAll(args)
     extraRunJvmArguments.addAll(propertyStringList('extra_jvm_args'))
@@ -204,6 +205,8 @@ processResources {
 jar {
     manifest {
         def attribute_map = [:]
+        attribute_map['TweakClass'] = 'org.spongepowered.asm.launch.MixinTweaker'
+        attribute_map['MixinConfigs'] = 'mixins.gtcardboard.json'
         if (propertyBool('is_coremod')) {
             attribute_map['FMLCorePlugin'] = propertyString('coremod_plugin_class_name')
             if (propertyBool('coremod_includes_mod')) {
@@ -217,7 +220,6 @@ jar {
         if (propertyBool('use_access_transformer')) {
             attribute_map['FMLAT'] = propertyString('access_transformer_locations')
         }
-        attribute_map['TweakClass'] = 'org.spongepowered.asm.launch.MixinTweaker'
         attributes(attribute_map)
     }
     // Add all embedded dependencies into the jar
