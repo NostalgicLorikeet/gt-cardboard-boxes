@@ -41,6 +41,10 @@ public class MetaTileEntityBox extends MetaTileEntityCrate {
         this.inventorySize = inventorySize;
     }
 
+    public boolean isTaped() {
+        return isTaped;
+    }
+
     @Override
     @SideOnly(Side.CLIENT)
     public Pair<TextureAtlasSprite, Integer> getParticleTexture() {
