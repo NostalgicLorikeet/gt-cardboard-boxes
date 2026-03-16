@@ -1,10 +1,12 @@
 package nostalgic.cardboardboxes.loaders.recipes;
 
+import gregtech.api.items.toolitem.ToolClasses;
 import gregtech.api.recipes.ModHandler;
 import gregtech.api.unification.OreDictUnifier;
 import gregtech.api.unification.ore.OrePrefix;
 import gregtech.api.unification.stack.UnificationEntry;
 import gregtech.common.items.MetaItems;
+import gregtech.common.items.ToolItems;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import nostalgic.cardboardboxes.machine.CardboardMetaTileEntities;
@@ -61,7 +63,8 @@ public class CardboardRecipes {
                 .buildAndRegister();
 
         ModHandler.addShapedRecipe(true, "cardboard_sheet", OreDictUnifier.get(OrePrefix.plate, CardboardMaterials.Cardboard, 1),
-                "CRC", "CRC", "CBC",
+                "CHC", "CRC", "CBC",
+                'H', ToolItems.HARD_HAMMER,
                 'R', MetaItems.STICKY_RESIN.getStackForm(),
                 'B', new ItemStack(Items.WATER_BUCKET),
                 'C', new UnificationEntry(dust, Paper));
@@ -70,7 +73,7 @@ public class CardboardRecipes {
                 .EUt(12)
                 .duration(147)
                 .input(CARDBOARD_CRATE)
-                .output(dust, Paper, 24)
+                .output(dust, Paper, 36)
                 .buildAndRegister();
     }
 }
