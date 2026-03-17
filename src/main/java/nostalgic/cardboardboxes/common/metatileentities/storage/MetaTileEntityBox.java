@@ -22,6 +22,7 @@ import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import nostalgic.cardboardboxes.IMixinCrate;
 import org.apache.commons.lang3.tuple.Pair;
 import nostalgic.cardboardboxes.client.renderer.texture.CardboardTextures;
 
@@ -30,10 +31,11 @@ import static gregtech.api.capability.GregtechDataCodes.IS_TAPED;
 public class MetaTileEntityBox extends MetaTileEntityCrate {
     private final Material material;
     private final int inventorySize;
-    private boolean isTaped;
+    //private boolean isTaped;
     private final String TAPED_NBT = "Taped";
     //private static final boolean boxKeepTapeOnPlace = (Config.boxKeepTapeOnPlace && !Config.boxNoTape);
     //private static final boolean boxNoTape = (Config.boxNoTape);
+    IMixinCrate mixinme = (IMixinCrate) this;
 
     public MetaTileEntityBox(ResourceLocation metaTileEntityId, Material material, int inventorySize) {
         super(metaTileEntityId, material, inventorySize);
@@ -55,7 +57,7 @@ public class MetaTileEntityBox extends MetaTileEntityCrate {
     @Override
     public void renderMetaTileEntity(CCRenderState renderState, Matrix4 translation, IVertexOperation[] pipeline) {
         CardboardTextures.CARDBOARD_CRATE.render(renderState, translation, GTUtility.convertRGBtoOpaqueRGBA_CL(getPaintingColorForRendering()), pipeline);
-        boolean taped = isTaped;
+        boolean taped = mixinme.isTaped();
         if (renderContextStack != null && renderContextStack.getTagCompound() != null) {
             NBTTagCompound tag = renderContextStack.getTagCompound();
             if (tag.hasKey(TAPED_NBT) && tag.getBoolean(TAPED_NBT)) {
@@ -69,7 +71,7 @@ public class MetaTileEntityBox extends MetaTileEntityCrate {
 
     @Override
     public void clearMachineInventory(NonNullList<ItemStack> itemBuffer) {
-        if (!isTaped) {
+        if (!mixinme.isTaped()) {
             clearInventory(itemBuffer, inventory);
         }
     }
@@ -78,15 +80,15 @@ public class MetaTileEntityBox extends MetaTileEntityCrate {
     public boolean onRightClick(EntityPlayer playerIn, EnumHand hand, EnumFacing facing,
                                 CuboidRayTraceResult hitResult) {
         ItemStack stack = playerIn.getHeldItem(hand);
-        if (playerIn.isSneaking() && !isTaped) {
+        if (playerIn.isSneaking() && !mixinme.isTaped()) {
             if (stack.isItemEqual(MetaItems.DUCT_TAPE.getStackForm()) ||
                     stack.isItemEqual(MetaItems.BASIC_TAPE.getStackForm())) {
                 if (!playerIn.isCreative()) {
                     stack.shrink(1);
                 }
-                isTaped = true;
+                mixinme.setTaped(true);
                 if (!getWorld().isRemote) {
-                    writeCustomData(IS_TAPED, buf -> buf.writeBoolean(isTaped));
+                    writeCustomData(IS_TAPED, buf -> buf.writeBoolean(mixinme.isTaped()));
                     markDirty();
                 }
                 return true;
@@ -99,7 +101,7 @@ public class MetaTileEntityBox extends MetaTileEntityCrate {
     public NBTTagCompound writeToNBT(NBTTagCompound data) {
         super.writeToNBT(data);
         data.setTag("Inventory", inventory.serializeNBT());
-        data.setBoolean(TAPED_NBT, isTaped);
+        data.setBoolean(TAPED_NBT, mixinme.isTaped());
         return data;
     }
 
@@ -108,7 +110,7 @@ public class MetaTileEntityBox extends MetaTileEntityCrate {
         super.readFromNBT(data);
         this.inventory.deserializeNBT(data.getCompoundTag("Inventory"));
         if (data.hasKey(TAPED_NBT)) {
-            this.isTaped = data.getBoolean(TAPED_NBT);
+            mixinme.setTaped(data.getBoolean(TAPED_NBT));
         }
     }
 
@@ -118,15 +120,15 @@ public class MetaTileEntityBox extends MetaTileEntityCrate {
         if (data.hasKey(TAG_KEY_PAINTING_COLOR)) {
             this.setPaintingColor(data.getInteger(TAG_KEY_PAINTING_COLOR));
         }
-        this.isTaped = data.getBoolean(TAPED_NBT);
-        if (isTaped) {
+        mixinme.setTaped(data.getBoolean(TAPED_NBT));
+        if (mixinme.isTaped()) {
             this.inventory.deserializeNBT(data.getCompoundTag("Inventory"));
         }
 
         data.removeTag(TAPED_NBT);
         data.removeTag(TAG_KEY_PAINTING_COLOR);
 
-        this.isTaped = false;
+        mixinme.setTaped(false);
     }
 
     @Override
@@ -138,8 +140,8 @@ public class MetaTileEntityBox extends MetaTileEntityCrate {
             data.setInteger(TAG_KEY_PAINTING_COLOR, this.getPaintingColor());
         }
         // Don't write tape NBT if not taped, to stack with ones from JEI
-        if (isTaped) {
-            data.setBoolean(TAPED_NBT, isTaped);
+        if (mixinme.isTaped()) {
+            data.setBoolean(TAPED_NBT, mixinme.isTaped());
             data.setTag("Inventory", inventory.serializeNBT());
         }
     }
@@ -149,7 +151,7 @@ public class MetaTileEntityBox extends MetaTileEntityCrate {
         super.receiveCustomData(dataId, buf);
 
         if (dataId == IS_TAPED) {
-            this.isTaped = buf.readBoolean();
+            mixinme.setTaped(buf.readBoolean());
             scheduleRenderUpdate();
             markDirty();
         }

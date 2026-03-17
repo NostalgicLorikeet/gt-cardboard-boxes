@@ -24,31 +24,40 @@ public class CrateCustomBreakEvent {
     //This also really sucks
     @SubscribeEvent
     public void onBlockBreak(BlockEvent.BreakEvent event) {
-        EntityPlayer player = event.getPlayer();
-
         if (event.getState().getBlock() instanceof BlockMachine) {
+
             World world = event.getWorld();
             BlockPos pos = event.getPos();
             MetaTileEntity metaTileEntity = getMetaTileEntity(world, pos);
-            if (!world.isRemote && metaTileEntity instanceof MetaTileEntityCrate) {
-                boolean isBox = metaTileEntity instanceof MetaTileEntityBox;
-                boolean taped = ((IMixinCrate) metaTileEntity).isTaped();
-                if (isBox) {
-                    MetaTileEntityBox box = (MetaTileEntityBox) metaTileEntity;
-                    ItemStack boxDrop = box.getStackForm();
-                    if (!taped) {
-                        NonNullList<ItemStack> inventoryContents = NonNullList.create();
-                        box.clearMachineInventory(inventoryContents);
-                        for (ItemStack itemStack : inventoryContents) {
-                            Block.spawnAsEntity(world, pos, itemStack);
-                        }
-                    } else {
-                        boxDrop.setTagCompound(box.writeToNBT(new NBTTagCompound()));
-                        boxDrop.getTagCompound().setBoolean("Taped", true);
+
+            if (!world.isRemote && metaTileEntity instanceof IMixinCrate) {
+
+                EntityPlayer player = event.getPlayer();
+                MetaTileEntityCrate crate = (MetaTileEntityCrate) metaTileEntity;
+                NonNullList<ItemStack> inventoryContents = ((IMixinCrate) crate).getInventoryAsNonNullList();
+
+                boolean isBox = crate instanceof MetaTileEntityBox;
+                boolean isTaped = ((IMixinCrate) metaTileEntity).isTaped();
+                boolean harvestable = player.getHeldItemMainhand().canHarvestBlock(event.getState());
+
+                if ((!isBox && isTaped && !harvestable) || (isBox && !isTaped)) {
+                    for (ItemStack itemStack : inventoryContents) {
+                        Block.spawnAsEntity(world, pos, itemStack);
                     }
-                    if (!player.isCreative() || taped) {
-                        Block.spawnAsEntity(world, pos, boxDrop);
+                    if (isBox) {
+                        Block.spawnAsEntity(world, pos, crate.getStackForm());
                     }
+                }
+
+                if (isBox && isTaped) {
+                    ItemStack boxDrop = crate.getStackForm();
+                    boxDrop.setTagCompound(crate.writeToNBT(new NBTTagCompound()));
+                    boxDrop.getTagCompound().setBoolean("Taped", true);
+                    boxDrop.getTagCompound().setTag("Inventory", ((IMixinCrate) crate).getInventoryHandler().serializeNBT());
+                    Block.spawnAsEntity(world, pos, boxDrop);
+                }
+
+                if (isBox || !harvestable) {
                     world.setBlockToAir(pos);
                     event.setCanceled(true);
                 }
