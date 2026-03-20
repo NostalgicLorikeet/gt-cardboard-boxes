@@ -1,5 +1,5 @@
 {
-	"package": "nostalgic.cardboardboxes.mixin",
+	"package": "nostalgic.gtcardboard.mixin",
 	"required": true,
 	"refmap": "mixins.gtcardboard.refmap.json",
 	"target": "@env(DEFAULT)",

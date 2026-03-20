@@ -1,4 +1,4 @@
-package nostalgic.cardboardboxes.client.renderer.texture.custom;
+package nostalgic.gtcardboard.client.renderer.texture.custom;
 
 import codechicken.lib.render.CCRenderState;
 import codechicken.lib.render.pipeline.ColourMultiplier;

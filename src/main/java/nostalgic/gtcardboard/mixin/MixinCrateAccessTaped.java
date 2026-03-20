@@ -1,10 +1,10 @@
-package nostalgic.cardboardboxes.mixin;
+package nostalgic.gtcardboard.mixin;
 
 import gregtech.common.metatileentities.storage.MetaTileEntityCrate;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
 import net.minecraftforge.items.ItemStackHandler;
-import nostalgic.cardboardboxes.IMixinCrate;
+import nostalgic.gtcardboard.IMixinCrate;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 
@@ -40,5 +40,15 @@ public abstract class MixinCrateAccessTaped implements IMixinCrate {
             list.add(inventory.getStackInSlot(i));
         }
         return list;
+    }
+
+    @Override
+    public boolean isInventoryEmpty() {
+        for (int i = 0; i<inventory.getSlots(); i+=1) {
+            if (!inventory.getStackInSlot(i).isEmpty()) {
+                return false;
+            }
+        }
+        return true;
     }
 }

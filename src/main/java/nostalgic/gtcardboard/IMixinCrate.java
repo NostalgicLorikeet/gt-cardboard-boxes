@@ -1,4 +1,4 @@
-package nostalgic.cardboardboxes;
+package nostalgic.gtcardboard;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
@@ -9,4 +9,5 @@ public interface IMixinCrate {
     void setTaped(boolean taped);
     NonNullList<ItemStack> getInventoryAsNonNullList();
     ItemStackHandler getInventoryHandler();
+    boolean isInventoryEmpty();
 }

@@ -1,4 +1,4 @@
-package nostalgic.cardboardboxes.common;
+package nostalgic.gtcardboard.common;
 
 import gregtech.api.GregTechAPI;
 import gregtech.api.unification.material.event.MaterialEvent;
@@ -8,8 +8,8 @@ import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import nostalgic.cardboardboxes.loaders.recipes.CardboardRecipes;
-import nostalgic.cardboardboxes.materials.CardboardMaterials;
+import nostalgic.gtcardboard.loaders.recipes.CardboardRecipes;
+import nostalgic.gtcardboard.materials.CardboardMaterials;
 import nostalgic.gtcardboard.Tags;
 
 @Mod.EventBusSubscriber(modid = Tags.MOD_ID)

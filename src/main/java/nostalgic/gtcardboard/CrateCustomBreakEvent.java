@@ -1,4 +1,4 @@
-package nostalgic.cardboardboxes;
+package nostalgic.gtcardboard;
 
 import gregtech.api.block.machines.BlockMachine;
 import gregtech.api.metatileentity.MetaTileEntity;
@@ -12,16 +12,14 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import nostalgic.cardboardboxes.common.metatileentities.storage.MetaTileEntityBox;
+import nostalgic.gtcardboard.common.metatileentities.storage.MetaTileEntityBox;
+import nostalgic.gtcardboard.IMixinCrate;
 
 import static gregtech.api.util.GTUtility.getMetaTileEntity;
 
 public class CrateCustomBreakEvent {
     //This is a workaround for the fact that you cant break MTEs by hand
     //And also the fact that taped crates just delete items when broken by hand
-    //Only applies to boxes rn but will make apply to crates when not lazy
-    //Also will prolly use for config stuff
-    //This also really sucks
     @SubscribeEvent
     public void onBlockBreak(BlockEvent.BreakEvent event) {
         if (event.getState().getBlock() instanceof BlockMachine) {
@@ -34,10 +32,11 @@ public class CrateCustomBreakEvent {
 
                 EntityPlayer player = event.getPlayer();
                 MetaTileEntityCrate crate = (MetaTileEntityCrate) metaTileEntity;
-                NonNullList<ItemStack> inventoryContents = ((IMixinCrate) crate).getInventoryAsNonNullList();
+                IMixinCrate crateCasted = (IMixinCrate) crate;
+                NonNullList<ItemStack> inventoryContents = crateCasted.getInventoryAsNonNullList();
 
                 boolean isBox = crate instanceof MetaTileEntityBox;
-                boolean isTaped = ((IMixinCrate) metaTileEntity).isTaped();
+                boolean isTaped = crateCasted.isTaped();
                 boolean harvestable = player.getHeldItemMainhand().canHarvestBlock(event.getState());
 
                 if ((!isBox && isTaped && !harvestable) || (isBox && !isTaped)) {
@@ -53,7 +52,7 @@ public class CrateCustomBreakEvent {
                     ItemStack boxDrop = crate.getStackForm();
                     boxDrop.setTagCompound(crate.writeToNBT(new NBTTagCompound()));
                     boxDrop.getTagCompound().setBoolean("Taped", true);
-                    boxDrop.getTagCompound().setTag("Inventory", ((IMixinCrate) crate).getInventoryHandler().serializeNBT());
+                    boxDrop.getTagCompound().setTag("Inventory", crateCasted.getInventoryHandler().serializeNBT());
                     Block.spawnAsEntity(world, pos, boxDrop);
                 }
 

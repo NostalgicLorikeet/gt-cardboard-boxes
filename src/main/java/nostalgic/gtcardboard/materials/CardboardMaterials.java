@@ -1,4 +1,4 @@
-package nostalgic.cardboardboxes.materials;
+package nostalgic.gtcardboard.materials;
 
 import gregtech.api.unification.material.Material;
 import net.minecraft.util.ResourceLocation;

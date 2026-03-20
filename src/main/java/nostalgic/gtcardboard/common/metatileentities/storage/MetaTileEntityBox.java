@@ -1,4 +1,4 @@
-package nostalgic.cardboardboxes.common.metatileentities.storage;
+package nostalgic.gtcardboard.common.metatileentities.storage;
 
 import codechicken.lib.raytracer.CuboidRayTraceResult;
 import codechicken.lib.render.CCRenderState;
@@ -22,9 +22,9 @@ import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import nostalgic.cardboardboxes.IMixinCrate;
+import nostalgic.gtcardboard.IMixinCrate;
 import org.apache.commons.lang3.tuple.Pair;
-import nostalgic.cardboardboxes.client.renderer.texture.CardboardTextures;
+import nostalgic.gtcardboard.client.renderer.texture.CardboardTextures;
 
 import static gregtech.api.capability.GregtechDataCodes.IS_TAPED;
 
@@ -157,22 +157,13 @@ public class MetaTileEntityBox extends MetaTileEntityCrate {
         }
     }
 
-    public boolean isInventoryEmpty() {
-        for (int i = 0; i<inventory.getSlots(); i+=1) {
-            if (!inventory.getStackInSlot(i).isEmpty()) {
-                return false;
-            }
-        }
-        return true;
-    }
-
     @Override
     public float getBlockHardness() {
-        return 0.2F;
+        return 0.4F;
     }
 
     @Override
     public float getBlockResistance() {
-        return 0.2F;
+        return 0.4F;
     }
 }

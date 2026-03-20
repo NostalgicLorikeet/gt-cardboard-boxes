@@ -1,6 +1,6 @@
-package nostalgic.cardboardboxes.client.renderer.texture;
+package nostalgic.gtcardboard.client.renderer.texture;
 
-import nostalgic.cardboardboxes.client.renderer.texture.custom.BoxRenderer;
+import nostalgic.gtcardboard.client.renderer.texture.custom.BoxRenderer;
 
 public class CardboardTextures {
     public static BoxRenderer CARDBOARD_CRATE;

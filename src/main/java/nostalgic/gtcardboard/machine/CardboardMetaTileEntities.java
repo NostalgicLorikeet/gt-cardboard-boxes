@@ -1,11 +1,10 @@
-package nostalgic.cardboardboxes.machine;
+package nostalgic.gtcardboard.machine;
 
-import static gregtech.api.util.GTUtility.gregtechId;
 import static gregtech.common.metatileentities.MetaTileEntities.registerMetaTileEntity;
-import gregtech.common.metatileentities.storage.MetaTileEntityCrate;
+
 import net.minecraft.util.ResourceLocation;
-import nostalgic.cardboardboxes.common.metatileentities.storage.MetaTileEntityBox;
-import nostalgic.cardboardboxes.materials.CardboardMaterials;
+import nostalgic.gtcardboard.common.metatileentities.storage.MetaTileEntityBox;
+import nostalgic.gtcardboard.materials.CardboardMaterials;
 import nostalgic.gtcardboard.Tags;
 
 public class CardboardMetaTileEntities {

@@ -1,11 +1,10 @@
-package nostalgic.cardboardboxes;
+package nostalgic.gtcardboard;
 
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
-import nostalgic.cardboardboxes.client.renderer.texture.CardboardTextures;
-import nostalgic.cardboardboxes.machine.CardboardMetaTileEntities;
-import nostalgic.gtcardboard.Tags;
+import nostalgic.gtcardboard.client.renderer.texture.CardboardTextures;
+import nostalgic.gtcardboard.machine.CardboardMetaTileEntities;
 
 @Mod(modid = Tags.MOD_ID, name = Tags.MOD_NAME, version = Tags.VERSION)
 public class CardboardBoxes {

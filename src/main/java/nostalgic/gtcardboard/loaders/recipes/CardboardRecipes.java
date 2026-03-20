@@ -1,6 +1,5 @@
-package nostalgic.cardboardboxes.loaders.recipes;
+package nostalgic.gtcardboard.loaders.recipes;
 
-import gregtech.api.items.toolitem.ToolClasses;
 import gregtech.api.recipes.ModHandler;
 import gregtech.api.unification.OreDictUnifier;
 import gregtech.api.unification.ore.OrePrefix;
@@ -9,15 +8,15 @@ import gregtech.common.items.MetaItems;
 import gregtech.common.items.ToolItems;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
-import nostalgic.cardboardboxes.machine.CardboardMetaTileEntities;
-import nostalgic.cardboardboxes.materials.CardboardMaterials;
+import nostalgic.gtcardboard.machine.CardboardMetaTileEntities;
+import nostalgic.gtcardboard.materials.CardboardMaterials;
 
 import static gregtech.api.recipes.RecipeMaps.ASSEMBLER_RECIPES;
 import static gregtech.api.recipes.RecipeMaps.MACERATOR_RECIPES;
 import static gregtech.api.unification.material.Materials.*;
 import static gregtech.api.unification.ore.OrePrefix.*;
-import static nostalgic.cardboardboxes.machine.CardboardMetaTileEntities.CARDBOARD_CRATE;
-import static nostalgic.cardboardboxes.materials.CardboardMaterials.Cardboard;
+import static nostalgic.gtcardboard.machine.CardboardMetaTileEntities.CARDBOARD_CRATE;
+import static nostalgic.gtcardboard.materials.CardboardMaterials.Cardboard;
 
 public class CardboardRecipes {
     public static void registerRecipes() {
