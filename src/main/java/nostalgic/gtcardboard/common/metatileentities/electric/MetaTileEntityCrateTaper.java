@@ -117,7 +117,7 @@ public class MetaTileEntityCrateTaper extends TieredMetaTileEntity {
     }
 
     private int getEnergyPerCrateTape() {
-        return (int) GTValues.V[getTier()] * 4;
+        return (int) GTValues.V[getTier()];
     }
 
     @Override
