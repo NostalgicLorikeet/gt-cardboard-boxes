@@ -39,16 +39,16 @@ public class CrateCustomBreakEvent {
                 boolean isTaped = crateCasted.isTaped();
                 boolean harvestable = player.getHeldItemMainhand().canHarvestBlock(event.getState());
 
-                if ((!isBox && isTaped && !harvestable) || (isBox && !isTaped)) {
+                if (player.isCreative() || (!isBox && isTaped && !harvestable) || (isBox && !isTaped)) {
                     for (ItemStack itemStack : inventoryContents) {
                         Block.spawnAsEntity(world, pos, itemStack);
                     }
-                    if (isBox) {
+                    if (isBox && !player.isCreative()) {
                         Block.spawnAsEntity(world, pos, crate.getStackForm());
                     }
                 }
 
-                if (isBox && isTaped) {
+                if (isBox && isTaped && !player.isCreative()) {
                     ItemStack boxDrop = crate.getStackForm();
                     boxDrop.setTagCompound(crate.writeToNBT(new NBTTagCompound()));
                     boxDrop.getTagCompound().setBoolean("Taped", true);

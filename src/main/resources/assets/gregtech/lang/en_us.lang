@@ -1,2 +1,8 @@
 gtcardboard.material.cardboard=Cardboard
 gtcardboard.machine.crate.cardboard.name=Cardboard Box
+
+gtcardboard.machine.crate_taper.lv.name=Basic Crate Taper
+gtcardboard.machine.crate_taper.mv.name=Advanced Crate Taper
+gtcardboard.machine.crate_taper.hv.name=Advanced Crate Taper II
+
+gregtech.machine.crate_taper.tooltip=Tapes crates and boxes on front face
