@@ -20,6 +20,7 @@ import static gregtech.api.util.GTUtility.getMetaTileEntity;
 public class CrateCustomBreakEvent {
     //This is a workaround for the fact that you cant break MTEs by hand
     //And also the fact that taped crates just delete items when broken by hand
+    //This kinda sucks and could prolly be implemented better later
     @SubscribeEvent
     public void onBlockBreak(BlockEvent.BreakEvent event) {
         if (event.getState().getBlock() instanceof BlockMachine) {
