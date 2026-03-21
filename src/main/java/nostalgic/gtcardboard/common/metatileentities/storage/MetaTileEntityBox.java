@@ -27,6 +27,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import nostalgic.gtcardboard.IMixinCrate;
 import org.apache.commons.lang3.tuple.Pair;
 import nostalgic.gtcardboard.client.renderer.texture.CardboardTextures;
+import org.jetbrains.annotations.NotNull;
 
 import static gregtech.api.capability.GregtechDataCodes.IS_TAPED;
 
@@ -168,4 +169,16 @@ public class MetaTileEntityBox extends MetaTileEntityCrate {
     public float getBlockResistance() {
         return 0.4F;
     }
+
+    //@Override
+    //public void writeInitialSyncData(@NotNull PacketBuffer buf) {
+    //    super.writeInitialSyncData(buf);
+    //    buf.writeBoolean(mixinme.isTaped());
+    //}
+
+    //@Override
+    //public void receiveInitialSyncData(@NotNull PacketBuffer buf) {
+    //    super.receiveInitialSyncData(buf);
+    //    mixinme.setTaped(buf.readBoolean());
+    //}
 }
