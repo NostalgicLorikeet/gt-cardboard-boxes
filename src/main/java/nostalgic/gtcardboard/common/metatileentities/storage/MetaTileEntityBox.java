@@ -6,6 +6,7 @@ import codechicken.lib.render.pipeline.IVertexOperation;
 import codechicken.lib.vec.Matrix4;
 import gregtech.api.gui.GuiTextures;
 import gregtech.api.gui.ModularUI;
+import gregtech.api.gui.widgets.SlotWidget;
 import gregtech.api.metatileentity.MetaTileEntity;
 import gregtech.api.metatileentity.interfaces.IGregTechTileEntity;
 import gregtech.api.unification.material.Material;
@@ -25,11 +26,13 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import nostalgic.gtcardboard.IMixinCrate;
+import nostalgic.gtcardboard.common.CardboardBoxConfigHolder;
 import org.apache.commons.lang3.tuple.Pair;
 import nostalgic.gtcardboard.client.renderer.texture.CardboardTextures;
 import org.jetbrains.annotations.NotNull;
 
 import static gregtech.api.capability.GregtechDataCodes.IS_TAPED;
+import static nostalgic.gtcardboard.common.CardboardBoxConfigHolder.box;
 
 public class MetaTileEntityBox extends MetaTileEntityCrate {
     private final Material material;
@@ -162,12 +165,12 @@ public class MetaTileEntityBox extends MetaTileEntityCrate {
 
     @Override
     public float getBlockHardness() {
-        return 0.4F;
+        return box.boxesBreakQuick ? 0.4F : super.getBlockHardness() ;
     }
 
     @Override
     public float getBlockResistance() {
-        return 0.4F;
+        return box.boxesBreakQuick ? 0.4F : super.getBlockHardness() ;
     }
 
     //@Override

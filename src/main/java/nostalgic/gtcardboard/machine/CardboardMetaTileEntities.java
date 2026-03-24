@@ -1,6 +1,5 @@
 package nostalgic.gtcardboard.machine;
 
-import static gregtech.api.util.GTUtility.gregtechId;
 import static gregtech.common.metatileentities.MetaTileEntities.registerMetaTileEntity;
 
 import gregtech.api.GTValues;

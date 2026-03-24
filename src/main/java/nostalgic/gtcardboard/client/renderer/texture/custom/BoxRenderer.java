@@ -35,7 +35,7 @@ public class BoxRenderer extends CrateRenderer {
     public void registerIcons(TextureMap textureMap) {
         super.registerIcons(textureMap);
         this.sideSprite = textureMap.registerSprite(GTUtility.gregtechId("blocks/" + basePath));
-        this.cardboardTop = textureMap.registerSprite(GTUtility.gregtechId("blocks/storage/crates/cardboard_crate_top"));
+        this.cardboardTop = textureMap.registerSprite(GTUtility.gregtechId("blocks/" + basePath + "_top"));
     }
 
     @Override
