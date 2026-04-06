@@ -7,9 +7,13 @@ import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.NonNullList;
 import net.minecraftforge.items.ItemStackHandler;
 import nostalgic.gtcardboard.IMixinCrate;
+import nostalgic.gtcardboard.common.CardboardBoxConfigHolder;
+import nostalgic.gtcardboard.common.metatileentities.storage.MetaTileEntityBox;
 import org.jetbrains.annotations.NotNull;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.ModifyVariable;
 
 @Mixin(value = MetaTileEntityCrate.class, remap = false)
 public abstract class MixinCrateAccessTaped extends MetaTileEntity implements IMixinCrate {
@@ -40,9 +44,18 @@ public abstract class MixinCrateAccessTaped extends MetaTileEntity implements IM
     public NonNullList<ItemStack> getInventoryAsNonNullList() {
         NonNullList<ItemStack> list = NonNullList.create();
         for (int i = 0; i<inventory.getSlots(); i+=1) {
-            list.add(inventory.getStackInSlot(i));
+            if (inventory.getStackInSlot(i) != ItemStack.EMPTY) {
+                list.add(inventory.getStackInSlot(i));
+            }
         }
         return list;
+    }
+
+    @Override
+    public void setInventoryEmpty() {
+        for (int i = 0; i<inventory.getSlots(); i+=1) {
+            inventory.setStackInSlot(i,ItemStack.EMPTY);
+        }
     }
 
     @Override
@@ -76,16 +89,25 @@ public abstract class MixinCrateAccessTaped extends MetaTileEntity implements IM
     @Override
     public void writeInitialSyncData(@NotNull PacketBuffer buf) {
         super.writeInitialSyncData(buf);
-        buf.writeBoolean(this.isTaped);
+        if (CardboardBoxConfigHolder.box.enableWorldLoadTapeFix) {
+            buf.writeBoolean(this.isTaped);
+        }
     }
 
     @Override
     public void receiveInitialSyncData(@NotNull PacketBuffer buf) {
         super.receiveInitialSyncData(buf);
-        this.isTaped = buf.readBoolean();
+        if (CardboardBoxConfigHolder.box.enableWorldLoadTapeFix) {
+            this.isTaped = buf.readBoolean();
 
-        if (this.getWorld() != null && this.getWorld().isRemote) {
-            this.scheduleRenderUpdate();
+            if (this.getWorld() != null && this.getWorld().isRemote) {
+                this.scheduleRenderUpdate();
+            }
         }
+    }
+
+    @ModifyVariable(method = "renderMetaTileEntity", at = @At(value = "STORE"), ordinal = 0)
+    private boolean dontRenderTapeIfAlwaysTaped(boolean taped) {
+        return taped && !CardboardBoxConfigHolder.box.makeCratesAlwaysTaped;
     }
 }

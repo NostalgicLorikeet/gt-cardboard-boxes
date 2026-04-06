@@ -10,4 +10,5 @@ public interface IMixinCrate {
     NonNullList<ItemStack> getInventoryAsNonNullList();
     ItemStackHandler getInventoryHandler();
     boolean isInventoryEmpty();
+    void setInventoryEmpty();
 }

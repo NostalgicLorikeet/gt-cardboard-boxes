@@ -70,7 +70,7 @@ public class MetaTileEntityBox extends MetaTileEntityCrate {
                 taped = true;
             }
         }
-        if (taped) {
+        if (taped && !CardboardBoxConfigHolder.box.makeBoxesAlwaysTaped) {
             Textures.TAPED_OVERLAY.render(renderState, translation, pipeline);
         }
     }
